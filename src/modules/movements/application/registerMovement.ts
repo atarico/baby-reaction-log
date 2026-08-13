@@ -11,7 +11,8 @@ export interface RegisterMovementInput {
   readonly stimulusId: string
   /** Defaults to the current time. */
   readonly occurredAt?: string
-  readonly note?: string
+  readonly action?: string
+  readonly detail?: string
 }
 
 export const registerMovement =
@@ -23,7 +24,8 @@ export const registerMovement =
         id: createId(),
         stimulusId: input.stimulusId,
         occurredAt: input.occurredAt ?? currentTime.toISOString(),
-        note: input.note,
+        action: input.action,
+        detail: input.detail,
       },
       currentTime,
     )

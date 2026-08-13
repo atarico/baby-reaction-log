@@ -31,7 +31,7 @@ export const TimelineEntry = ({ movement, isLatest, onRemove }: TimelineEntryPro
           </span>
           {label}
         </p>
-        {movement.note ? <p className="entry__note">{movement.note}</p> : null}
+        {movement.detail ? <p className="entry__detail">{movement.detail}</p> : null}
       </div>
 
       <button

@@ -9,7 +9,7 @@ const movement = (overrides: Partial<Movement> = {}): Movement => ({
   ...overrides,
 })
 
-const HEADER = 'id,occurred_at,stimulus,details,note'
+const HEADER = 'id,occurred_at,stimulus,action,detail'
 
 describe('toCsv', () => {
   it('always writes the header row', () => {
@@ -29,18 +29,26 @@ describe('toCsv', () => {
     ])
   })
 
-  it('writes the details naming an "other" stimulus', () => {
-    const csv = toCsv([
-      movement({ stimulusId: 'other', details: 'Cambio de pañal', note: 'muy activo' }),
-    ])
+  it('writes the detail of any stimulus', () => {
+    const csv = toCsv([movement({ stimulusId: 'position-change', detail: 'Lado izquierdo' })])
 
     expect(csv.split('\n').at(1)).toBe(
-      'mov-1,2026-08-12T18:00:00.000Z,other,Cambio de pañal,muy activo',
+      'mov-1,2026-08-12T18:00:00.000Z,position-change,,Lado izquierdo',
     )
   })
 
-  it('quotes and escapes notes containing commas, quotes or newlines', () => {
-    const csv = toCsv([movement({ note: 'kicked, hard "twice"\nthen slept' })])
+  it('writes the action naming an "other" stimulus', () => {
+    const csv = toCsv([
+      movement({ stimulusId: 'other', action: 'Cambio de pañal', detail: 'Muy activo' }),
+    ])
+
+    expect(csv.split('\n').at(1)).toBe(
+      'mov-1,2026-08-12T18:00:00.000Z,other,Cambio de pañal,Muy activo',
+    )
+  })
+
+  it('quotes and escapes fields containing commas, quotes or newlines', () => {
+    const csv = toCsv([movement({ detail: 'kicked, hard "twice"\nthen slept' })])
 
     expect(csv).toBe(
       `${HEADER}\n` +

@@ -21,16 +21,17 @@ pnpm lint       # oxlint
 
 ## Using it
 
-- **Tap a stimulus** in the bottom pad to log a movement at the current time.
-  A toast confirms it and offers `Deshacer` (undo).
-- **`Otro`** saves the movement first and *then* asks what the stimulus was, so
-  the timestamp is never at risk. Naming it is optional — skipping leaves the
-  entry as `Otro`.
+- **Tap a stimulus** in the bottom pad. The movement is saved at the current
+  time *immediately*, and only then does a dialog ask for the **detail** — what
+  actually happened, in your own words. Skipping keeps the bare entry, so the
+  timestamp is never at risk.
+- **`Otro`** shows two fields instead of one: the **action** (the stimulus the
+  catalog does not list) and the **detail**.
 - **⋯ → Registrar un movimiento anterior** to record something that happened
-  earlier, with an optional note.
+  earlier, with the same fields.
 - **⋯ → Exportar CSV / JSON** to hand the log to a pediatrician or to back it up.
   The CSV keeps machine-stable English headers and stimulus ids:
-  `id,occurred_at,stimulus,details,note`.
+  `id,occurred_at,stimulus,action,detail`.
 - **✕** on a row deletes it.
 
 ## Deploying

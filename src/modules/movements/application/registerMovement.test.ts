@@ -43,7 +43,7 @@ describe('registerMovement', () => {
   })
 
   it('persists the movement in the repository', async () => {
-    const movement = await register({ stimulusId: 'sound', note: 'startled' })
+    const movement = await register({ stimulusId: 'sound', detail: 'Se sobresaltó' })
 
     expect(await repository.findAll()).toEqual([movement])
   })

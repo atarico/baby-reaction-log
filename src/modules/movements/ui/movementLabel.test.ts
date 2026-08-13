@@ -14,8 +14,8 @@ describe('movementLabel', () => {
     expect(movementLabel(movement())).toBe('Agua fría')
   })
 
-  it('prefers the details when the stimulus was named by hand', () => {
-    expect(movementLabel(movement({ stimulusId: 'other', details: 'Cambio de pañal' }))).toBe(
+  it('prefers the action when the stimulus was named by hand', () => {
+    expect(movementLabel(movement({ stimulusId: 'other', action: 'Cambio de pañal' }))).toBe(
       'Cambio de pañal',
     )
   })

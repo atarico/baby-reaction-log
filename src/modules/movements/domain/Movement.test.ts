@@ -14,7 +14,8 @@ describe('createMovement', () => {
       id: 'mov-1',
       stimulusId: 'cold-water',
       occurredAt: '2026-08-12T17:30:00.000Z',
-      note: undefined,
+      action: undefined,
+      detail: undefined,
     })
   })
 
@@ -27,27 +28,59 @@ describe('createMovement', () => {
     expect(movement.occurredAt).toBe('2026-08-12T15:30:00.000Z')
   })
 
-  it('keeps the details naming an "other" stimulus', () => {
+  it('trims the detail and keeps it for any stimulus', () => {
+    const movement = createMovement(
+      {
+        id: 'mov-1',
+        stimulusId: 'position-change',
+        occurredAt: now.toISOString(),
+        detail: '  Me recosté del lado izquierdo y se movió  ',
+      },
+      now,
+    )
+
+    expect(movement.detail).toBe('Me recosté del lado izquierdo y se movió')
+  })
+
+  it('drops a blank detail', () => {
+    const movement = createMovement(
+      { id: 'mov-1', stimulusId: 'light', occurredAt: now.toISOString(), detail: '   ' },
+      now,
+    )
+
+    expect(movement.detail).toBeUndefined()
+  })
+
+  it('allows a movement with no detail yet', () => {
+    const movement = createMovement(
+      { id: 'mov-1', stimulusId: 'light', occurredAt: now.toISOString() },
+      now,
+    )
+
+    expect(movement.detail).toBeUndefined()
+  })
+
+  it('trims the action naming an "other" stimulus', () => {
     const movement = createMovement(
       {
         id: 'mov-1',
         stimulusId: 'other',
         occurredAt: now.toISOString(),
-        details: '  Cambio de pañal  ',
+        action: '  Cambio de pañal  ',
       },
       now,
     )
 
-    expect(movement.details).toBe('Cambio de pañal')
+    expect(movement.action).toBe('Cambio de pañal')
   })
 
-  it('drops blank details', () => {
+  it('drops a blank action', () => {
     const movement = createMovement(
-      { id: 'mov-1', stimulusId: 'other', occurredAt: now.toISOString(), details: '   ' },
+      { id: 'mov-1', stimulusId: 'other', occurredAt: now.toISOString(), action: '   ' },
       now,
     )
 
-    expect(movement.details).toBeUndefined()
+    expect(movement.action).toBeUndefined()
   })
 
   it('allows an "other" movement that has not been named yet', () => {
@@ -56,21 +89,23 @@ describe('createMovement', () => {
       now,
     )
 
-    expect(movement.details).toBeUndefined()
+    expect(movement.action).toBeUndefined()
   })
 
-  it('trims the note and drops it when empty', () => {
-    const withNote = createMovement(
-      { id: 'mov-1', stimulusId: 'touch', occurredAt: now.toISOString(), note: '  kicked twice  ' },
-      now,
-    )
-    const withBlankNote = createMovement(
-      { id: 'mov-2', stimulusId: 'touch', occurredAt: now.toISOString(), note: '   ' },
+  it('accepts an action and a detail together on an "other" movement', () => {
+    const movement = createMovement(
+      {
+        id: 'mov-1',
+        stimulusId: 'other',
+        occurredAt: now.toISOString(),
+        action: 'Cambio de posición',
+        detail: 'Me recosté del lado izquierdo y se movió',
+      },
       now,
     )
 
-    expect(withNote.note).toBe('kicked twice')
-    expect(withBlankNote.note).toBeUndefined()
+    expect(movement.action).toBe('Cambio de posición')
+    expect(movement.detail).toBe('Me recosté del lado izquierdo y se movió')
   })
 
   const reasonOf = (draft: Parameters<typeof createMovement>[0]): unknown => {
@@ -109,14 +144,14 @@ describe('createMovement', () => {
     )
   })
 
-  it('rejects details on a stimulus that is already named by the catalog', () => {
+  it('rejects an action on a stimulus that the catalog already names', () => {
     expect(
       reasonOf({
         id: 'mov-1',
         stimulusId: 'light',
         occurredAt: now.toISOString(),
-        details: 'Linterna del celular',
+        action: 'Linterna del celular',
       }),
-    ).toBe('details-not-allowed')
+    ).toBe('action-not-allowed')
   })
 })

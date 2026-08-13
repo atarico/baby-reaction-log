@@ -6,8 +6,8 @@ import { fromDateTimeInputValue, toDateTimeInputValue } from '../dateTimeInput.t
 export interface ManualEntry {
   readonly stimulusId: StimulusId
   readonly occurredAt: string
-  readonly details?: string
-  readonly note?: string
+  readonly action?: string
+  readonly detail?: string
 }
 
 interface ManualEntryDialogProps {
@@ -20,8 +20,8 @@ export const ManualEntryDialog = ({ open, onClose, onSubmit }: ManualEntryDialog
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [stimulusId, setStimulusId] = useState<StimulusId>(STIMULI[0].id)
   const [occurredAt, setOccurredAt] = useState(() => toDateTimeInputValue(new Date()))
-  const [details, setDetails] = useState('')
-  const [note, setNote] = useState('')
+  const [action, setAction] = useState('')
+  const [detail, setDetail] = useState('')
   const isUnlisted = stimulusId === UNLISTED_STIMULUS_ID
 
   useEffect(() => {
@@ -42,11 +42,11 @@ export const ManualEntryDialog = ({ open, onClose, onSubmit }: ManualEntryDialog
     onSubmit({
       stimulusId,
       occurredAt: fromDateTimeInputValue(occurredAt),
-      details: isUnlisted ? details.trim() || undefined : undefined,
-      note: note.trim() || undefined,
+      action: isUnlisted ? action.trim() || undefined : undefined,
+      detail: detail.trim() || undefined,
     })
-    setDetails('')
-    setNote('')
+    setAction('')
+    setDetail('')
     onClose()
   }
 
@@ -72,13 +72,13 @@ export const ManualEntryDialog = ({ open, onClose, onSubmit }: ManualEntryDialog
 
         {isUnlisted ? (
           <label className="field">
-            <span className="field__label">¿Cuál fue el estímulo?</span>
+            <span className="field__label">Acción</span>
             <input
               className="field__control"
               type="text"
-              placeholder="Cambio de pañal"
-              value={details}
-              onChange={(event) => setDetails(event.target.value)}
+              placeholder="Cambio de posición"
+              value={action}
+              onChange={(event) => setAction(event.target.value)}
             />
           </label>
         ) : null}
@@ -96,13 +96,13 @@ export const ManualEntryDialog = ({ open, onClose, onSubmit }: ManualEntryDialog
         </label>
 
         <label className="field">
-          <span className="field__label">Nota (opcional)</span>
+          <span className="field__label">Detalle</span>
           <input
             className="field__control"
             type="text"
-            placeholder="Pateó dos veces, pierna derecha"
-            value={note}
-            onChange={(event) => setNote(event.target.value)}
+            placeholder="Me recosté del lado izquierdo y se movió"
+            value={detail}
+            onChange={(event) => setDetail(event.target.value)}
           />
         </label>
 

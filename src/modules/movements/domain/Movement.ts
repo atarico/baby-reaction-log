@@ -4,20 +4,21 @@ export interface Movement {
   readonly id: string
   readonly occurredAt: string
   readonly stimulusId: StimulusId
-  /** Names the stimulus when it is not in the catalog. Only valid for `other`. */
-  readonly details?: string
-  readonly note?: string
+  /** Names the stimulus when the catalog does not. Only valid for `other`. */
+  readonly action?: string
+  /** What actually happened, in the parent's own words. Valid for any stimulus. */
+  readonly detail?: string
 }
 
 export interface MovementDraft {
   readonly id: string
   readonly occurredAt: string
   readonly stimulusId: string
-  readonly details?: string
-  readonly note?: string
+  readonly action?: string
+  readonly detail?: string
 }
 
-/** The one stimulus whose real name has to be typed in by hand. */
+/** The one stimulus whose action has to be typed in by hand. */
 export const UNLISTED_STIMULUS_ID = 'other'
 
 /**
@@ -29,7 +30,7 @@ export type InvalidMovementReason =
   | 'unknown-stimulus'
   | 'unparsable-date'
   | 'future-date'
-  | 'details-not-allowed'
+  | 'action-not-allowed'
 
 export class InvalidMovementError extends Error {
   readonly reason: InvalidMovementReason
@@ -63,10 +64,10 @@ export const createMovement = (draft: MovementDraft, now: Date): Movement => {
     throw new InvalidMovementError('future-date', 'a movement cannot happen in the future')
   }
 
-  const details = blankToUndefined(draft.details)
-  if (details !== undefined && draft.stimulusId !== UNLISTED_STIMULUS_ID) {
+  const action = blankToUndefined(draft.action)
+  if (action !== undefined && draft.stimulusId !== UNLISTED_STIMULUS_ID) {
     throw new InvalidMovementError(
-      'details-not-allowed',
+      'action-not-allowed',
       `"${draft.stimulusId}" is already named by the catalog`,
     )
   }
@@ -75,7 +76,7 @@ export const createMovement = (draft: MovementDraft, now: Date): Movement => {
     id,
     occurredAt: occurredAt.toISOString(),
     stimulusId: draft.stimulusId,
-    details,
-    note: blankToUndefined(draft.note),
+    action,
+    detail: blankToUndefined(draft.detail),
   }
 }

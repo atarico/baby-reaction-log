@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { toCsv, toJson } from '../../application/exportMovements.ts'
-import { UNLISTED_STIMULUS_ID, type Movement } from '../../domain/Movement.ts'
+import type { Movement } from '../../domain/Movement.ts'
 import type { StimulusId } from '../../domain/Stimulus.ts'
 import { ActionsMenu } from '../components/ActionsMenu.tsx'
-import { DescribeOtherDialog } from '../components/DescribeOtherDialog.tsx'
+import { DescribeMovementDialog } from '../components/DescribeMovementDialog.tsx'
 import { ManualEntryDialog, type ManualEntry } from '../components/ManualEntryDialog.tsx'
 import { StimulusPad } from '../components/StimulusPad.tsx'
 import { Timeline } from '../components/Timeline.tsx'
@@ -31,12 +31,12 @@ export const MovementTracker = () => {
   const [manualEntryOpen, setManualEntryOpen] = useState(false)
   const [describing, setDescribing] = useState<Movement | null>(null)
 
-  // "Other" is logged first and named after: the timestamp is what must never
-  // be lost while the parent is holding a baby.
+  // Log first, describe after: the timestamp is what must never be lost while
+  // the parent is holding a baby. The prompt is always offered, never required.
   const pickStimulus = async (stimulusId: StimulusId) => {
     const movement = await register({ stimulusId })
 
-    if (movement && stimulusId === UNLISTED_STIMULUS_ID) setDescribing(movement)
+    if (movement) setDescribing(movement)
   }
 
   const todayKey = toLocalDayKey(now)
@@ -118,12 +118,12 @@ export const MovementTracker = () => {
         onSubmit={saveManualEntry}
       />
 
-      <DescribeOtherDialog
-        open={describing !== null}
-        onSubmit={(details) => {
+      <DescribeMovementDialog
+        movement={describing}
+        onSubmit={(description) => {
           const movement = describing
           setDescribing(null)
-          if (movement) void describe(movement, details)
+          if (movement) void describe(movement, description)
         }}
         onSkip={() => setDescribing(null)}
       />

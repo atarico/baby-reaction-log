@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { MovementDescription } from '../../application/describeMovement.ts'
 import type { RegisterMovementInput } from '../../application/registerMovement.ts'
 import { groupMovementsByDay, type MovementsOfDay } from '../../domain/groupMovementsByDay.ts'
 import type { Movement } from '../../domain/Movement.ts'
@@ -16,7 +17,7 @@ export interface UseMovements {
   readonly error: string | null
   readonly lastRegistered: Movement | null
   readonly register: (input: RegisterMovementInput) => Promise<Movement | null>
-  readonly describe: (movement: Movement, details: string) => Promise<void>
+  readonly describe: (movement: Movement, description: MovementDescription) => Promise<void>
   readonly remove: (id: string) => Promise<void>
   readonly dismissLastRegistered: () => void
   readonly dismissError: () => void
@@ -66,9 +67,9 @@ export const useMovements = (): UseMovements => {
     }
   }, [])
 
-  const describe = useCallback(async (movement: Movement, details: string) => {
+  const describe = useCallback(async (movement: Movement, description: MovementDescription) => {
     try {
-      const described = await movementsModule.describe(movement, details)
+      const described = await movementsModule.describe(movement, description)
 
       setMovements((current) =>
         current.map((candidate) => (candidate.id === described.id ? described : candidate)),

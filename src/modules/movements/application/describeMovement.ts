@@ -6,15 +6,21 @@ export interface DescribeMovementDependencies {
   readonly now: () => Date
 }
 
+export interface MovementDescription {
+  /** Only meaningful for the unlisted stimulus. */
+  readonly action?: string
+  readonly detail?: string
+}
+
 /**
- * Names the stimulus of a movement that was already registered as "other".
- * The timestamp is captured on the first tap, so nothing is lost if the parent
- * never gets around to naming it.
+ * Fills in what happened on a movement that is ALREADY registered. The
+ * timestamp is captured on the first tap, so nothing is lost if the parent
+ * never gets around to describing it.
  */
 export const describeMovement =
   ({ repository, now }: DescribeMovementDependencies) =>
-  async (movement: Movement, details: string): Promise<Movement> => {
-    const described = createMovement({ ...movement, details }, now())
+  async (movement: Movement, description: MovementDescription): Promise<Movement> => {
+    const described = createMovement({ ...movement, ...description }, now())
 
     await repository.save(described)
 

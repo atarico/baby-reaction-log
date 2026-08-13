@@ -342,7 +342,7 @@ input {
   color: oklch(0.78 0.12 var(--key-hue, 40));
 }
 
-.entry__note {
+.entry__detail {
   margin: 0.15rem 0 0;
   font-size: 0.8rem;
   line-height: 1.4;
