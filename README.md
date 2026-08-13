@@ -29,9 +29,15 @@ pnpm lint       # oxlint
   catalog does not list) and the **detail**.
 - **⋯ → Registrar un movimiento anterior** to record something that happened
   earlier, with the same fields.
-- **⋯ → Exportar CSV / JSON** to hand the log to a pediatrician or to back it up.
+- **⋯ → Exportar CSV / JSON** to back the log up or feed it to a spreadsheet.
   The CSV keeps machine-stable English headers and stimulus ids:
   `id,occurred_at,stimulus,action,detail`.
+- **⋯ → Exportar PDF / imprimir** for the version a pediatrician reads. It calls
+  `window.print()`; every browser's print dialog offers "Save as PDF". A print
+  stylesheet turns the nocturnal palette into black on white, drops the pad and
+  the controls, lets the log flow across pages, and adds a document header with
+  the totals and the period covered. No PDF library — jsPDF alone weighs more
+  than this entire app.
 - **✕** on a row deletes it.
 
 ## Deploying

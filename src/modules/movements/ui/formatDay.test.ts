@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDayLabel, toLocalDayKey } from './formatDay.ts'
+import { formatDayLabel, formatFullDate, toLocalDayKey } from './formatDay.ts'
 
 const today = new Date('2026-08-12T15:00:00.000Z')
 
@@ -25,5 +25,15 @@ describe('formatDayLabel', () => {
 
   it('spells out any older day', () => {
     expect(formatDayLabel('2026-08-03', today)).toBe('lun 3 ago 2026')
+  })
+})
+
+describe('formatFullDate', () => {
+  it('spells the date out in full, for a printed document', () => {
+    expect(formatFullDate('2026-08-03T15:00:00.000Z')).toBe('3 de agosto de 2026')
+  })
+
+  it('uses the local day, not the UTC one', () => {
+    expect(formatFullDate('2026-08-12T00:30:00.000Z')).toBe('11 de agosto de 2026')
   })
 })

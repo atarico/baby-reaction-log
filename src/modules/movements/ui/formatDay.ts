@@ -13,6 +13,16 @@ const timeFormatter = new Intl.DateTimeFormat('es', {
   hourCycle: 'h23',
 })
 
+const fullDateFormatter = new Intl.DateTimeFormat('es', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+})
+
+/** Spelled out in full — for a document someone reads on paper. */
+export const formatFullDate = (isoTimestamp: string): string =>
+  fullDateFormatter.format(new Date(isoTimestamp))
+
 export const toLocalDayKey = (date: Date): string =>
   [
     date.getFullYear(),

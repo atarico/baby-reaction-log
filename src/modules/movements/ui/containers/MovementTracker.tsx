@@ -5,6 +5,7 @@ import type { StimulusId } from '../../domain/Stimulus.ts'
 import { ActionsMenu } from '../components/ActionsMenu.tsx'
 import { DescribeMovementDialog } from '../components/DescribeMovementDialog.tsx'
 import { ManualEntryDialog, type ManualEntry } from '../components/ManualEntryDialog.tsx'
+import { PrintHeader } from '../components/PrintHeader.tsx'
 import { StimulusPad } from '../components/StimulusPad.tsx'
 import { Timeline } from '../components/Timeline.tsx'
 import { Toast } from '../components/Toast.tsx'
@@ -77,12 +78,21 @@ export const MovementTracker = () => {
                 onSelect: () => exportAs('json'),
                 disabled: allMovements.length === 0,
               },
+              {
+                label: 'Exportar PDF / imprimir',
+                // The browser's own print flow offers "Guardar como PDF" and
+                // costs zero kilobytes, which a PDF library would not.
+                onSelect: () => window.print(),
+                disabled: allMovements.length === 0,
+              },
             ]}
           />
         </div>
       </header>
 
       <main className="app__main">
+        <PrintHeader movements={allMovements} now={now} />
+
         {status === 'loading' ? (
           <p className="app__status">Abriendo el registro…</p>
         ) : (

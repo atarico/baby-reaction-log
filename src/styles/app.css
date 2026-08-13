@@ -597,6 +597,132 @@ input {
   outline-offset: 2px;
 }
 
+/* ---------------------------------------------------------------- print --- */
+
+/* Hidden on screen, the whole point of the printed sheet. */
+.print-header {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 16mm 14mm;
+  }
+
+  /* Paper is white. Printing the nocturnal palette would drain a cartridge
+     and read worse than plain black on white. */
+  body {
+    color: #000;
+    background: #fff;
+    background-image: none;
+  }
+
+  body::after {
+    display: none;
+  }
+
+  /* The screen shell is a fixed-height column with its own scroller; on paper
+     the log has to flow freely across as many pages as it needs. */
+  .app {
+    display: block;
+    height: auto;
+    max-width: none;
+  }
+
+  .app__main {
+    overflow: visible;
+  }
+
+  /* Everything you cannot tap on a sheet of paper. */
+  .app__header,
+  .app__pad,
+  .toast,
+  .sheet,
+  .entry__remove,
+  .entry__dot,
+  .day__entries::before {
+    display: none !important;
+  }
+
+  .print-header {
+    display: block;
+    margin-bottom: 1.5rem;
+    border-bottom: 1.5pt solid #000;
+    padding-bottom: 0.6rem;
+  }
+
+  .print-header__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 17pt;
+    font-weight: 600;
+  }
+
+  .print-header__period,
+  .print-header__generated {
+    margin: 0.25rem 0 0;
+    font-size: 9.5pt;
+    color: #333;
+  }
+
+  .timeline {
+    padding: 0;
+  }
+
+  .day__header {
+    position: static;
+    padding: 0.9rem 0 0.3rem;
+    background: none;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .day__header::after {
+    background: #000;
+  }
+
+  .day__label {
+    font-size: 12pt;
+    color: #000;
+  }
+
+  /* Pinned to the right margin it reads as a page number. Sitting next to the
+     day label it reads as what it is: how many reactions that day holds. */
+  .day__count {
+    order: 2;
+    font-size: 9pt;
+    color: #333;
+  }
+
+  .day__count::before {
+    content: '· ';
+  }
+
+  .day__header::after {
+    order: 3;
+  }
+
+  .entry {
+    grid-template-columns: 3.2rem 1fr;
+    gap: 0 0.8rem;
+    padding-block: 0.3rem;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .entry__time,
+  .entry__stimulus,
+  .entry__glyph {
+    font-size: 10.5pt;
+    color: #000;
+  }
+
+  .entry__detail {
+    font-size: 9.5pt;
+    color: #333;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
