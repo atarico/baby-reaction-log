@@ -75,4 +75,7 @@ port; swapping IndexedDB for a remote API means writing one adapter and editing
 - Timestamps are stored in UTC (ISO 8601) and rendered in the device's local
   timezone. Tests are pinned to `America/Argentina/Buenos_Aires` so timezone
   behaviour stays deterministic.
+- The IndexedDB adapter still reads the `details`/`note` keys written before
+  those fields were renamed to `action`/`detail`, and maps them on the way out.
+  Storage history lives in the adapter; the domain never sees the old shape.
 - A movement cannot be logged in the future; the domain rejects it.

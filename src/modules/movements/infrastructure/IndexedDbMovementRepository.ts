@@ -5,6 +5,24 @@ const DATABASE_VERSION = 1
 const STORE = 'movements'
 const BY_OCCURRED_AT = 'by-occurred-at'
 
+/**
+ * Shape written by versions of the app shipped before `details`/`note` were
+ * renamed to `action`/`detail`. Storage history belongs to the adapter: the
+ * domain must never learn that these keys ever existed.
+ */
+interface StoredMovement extends Movement {
+  readonly details?: string
+  readonly note?: string
+}
+
+const toMovement = (stored: StoredMovement): Movement => ({
+  id: stored.id,
+  occurredAt: stored.occurredAt,
+  stimulusId: stored.stimulusId,
+  action: stored.action ?? stored.details,
+  detail: stored.detail ?? stored.note,
+})
+
 const requestToPromise = <T>(request: IDBRequest<T>): Promise<T> =>
   new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result)
@@ -36,11 +54,11 @@ export class IndexedDbMovementRepository implements MovementRepository {
   async findAll(): Promise<Movement[]> {
     const database = await this.open()
     const transaction = database.transaction(STORE, 'readonly')
-    const ascending = await requestToPromise<Movement[]>(
+    const ascending = await requestToPromise<StoredMovement[]>(
       transaction.objectStore(STORE).index(BY_OCCURRED_AT).getAll(),
     )
 
-    return ascending.reverse()
+    return ascending.reverse().map(toMovement)
   }
 
   async delete(id: string): Promise<void> {
